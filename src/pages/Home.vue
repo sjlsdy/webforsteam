@@ -1,5 +1,6 @@
 <template>
   <div class="home-page-frame">
+		<gameplay v-model="play"></gameplay>
     <div class="home-header-frame">
       <div>一口叉</div>
     </div>
@@ -34,7 +35,7 @@
       </div>
       <div class="home-content-game">
         <div class="home-gameplay-frame">
-          <div class="home-gameplay-btn"></div>
+          <div class="home-gameplay-btn" @click="playgame"></div>
           <div class="home-gameplay-info-box">
             <div class="home-gameplay-info-item">
               <div class="t">YOU PALYED</div>
@@ -198,103 +199,17 @@
 
 <script>
 import gamenav from './main/nav'
+import gameplay from './main/gameplay'
 export default {
+	name: 'Home',
   components: {
-    gamenav
+    gamenav,gameplay
   },
   data() {
     return {
       canvasWidth: 0,
       navSelected: 1003,
-      navData: [
-        {
-          id: 1000,
-          title: "FPS Games",
-          showlist: true,
-          height: 0,
-          list: [
-            {
-              id: 1001,
-              icon: "../../static/images/logo001-001.png",
-              title: "Counter-Strlike"
-            },
-            {
-              id: 1002,
-              icon: "../../static/images/logo001-001.png",
-              title: "Counter-Strlike"
-            },
-            {
-              id: 1003,
-              icon: "../../static/images/logo001-001.png",
-              title: "Counter-Strlike"
-            }
-          ]
-        },
-        {
-          id: 2000,
-          title: "Racing Games",
-          showlist: false,
-          height: 0,
-          list: [
-            {
-              id: 2001,
-              icon: "../../static/images/logo001-001.png",
-              title: "Counter-Strlike"
-            },
-            {
-              id: 2002,
-              icon: "../../static/images/logo001-001.png",
-              title: "Counter-Strlike"
-            }
-          ]
-        },
-        {
-          id: 3000,
-          title: "Other",
-          showlist: false,
-          height: 0,
-          list: [
-            {
-              id: 3001,
-              icon: "../../static/images/logo001-001.png",
-              title: "Counter-Strlike"
-            }
-          ]
-        },
-        {
-          id: 4000,
-          title: "Software",
-          showlist: false,
-          height: 0,
-          list: [
-            {
-              id: 4001,
-              icon: "../../static/images/logo001-001.png",
-              title: "Counter-Strlike"
-            },
-            {
-              id: 4002,
-              icon: "../../static/images/logo001-001.png",
-              title: "Counter-Strlike"
-            },
-            {
-              id: 4003,
-              icon: "../../static/images/logo001-001.png",
-              title: "Counter-Strlike"
-            },
-            {
-              id: 4004,
-              icon: "../../static/images/logo001-001.png",
-              title: "Counter-Strlike"
-            },
-            {
-              id: 4005,
-              icon: "../../static/images/logo001-001.png",
-              title: "Counter-Strlike"
-            }
-          ]
-        }
-      ]
+      play: false,
     };
   },
   methods: {
@@ -346,7 +261,18 @@ export default {
         .catch(response => {
           console.log(response);
         });
-    }
+    },
+		// 开始游戏
+		playgame() {
+			let _this = this;
+			let loading = _this.$loading('游戏正在启动，请稍候');
+			setTimeout(()=>{
+				_this.play = true;
+			},3000)
+			setTimeout(()=>{
+				loading.show = false;
+			},4000)
+		},
   },
   mounted() {
     let _this = this;

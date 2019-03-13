@@ -2,21 +2,23 @@
 	<div class="login-frame">
 		<div class="login-box">
 			<div class="login-item">
-				<div class="logo">
-					<img class="img" src="/static/images/steam-logo.png" />
-				</div>
+				<div class="logo"><img class="img" src="/static/images/steam-logo.png" /></div>
 			</div>
 			<div class="login-item">
 				<div class="login-item-lable">账户名称</div>
-				<div class="login-item-content"><input class="inp" /></div>
+				<div class="login-item-content">
+					<input type="text" class="inp" v-model="username" maxLength="10" />
+				</div>
 			</div>
 			<div class="login-item">
 				<div class="login-item-lable">密码</div>
-				<div class="login-item-content"><input class="inp" /></div>
+				<div class="login-item-content">
+					<input type="password" class="inp" v-model="password" maxLength="10" />
+				</div>
 			</div>
 			<div class="login-item">
 				<div class="login-item-content">
-					<button class="btn" @click="loginsub">登录</button>
+					<button class="btn" @click="loginsub" :disabled="subStatus">登录</button>
 				</div>
 				<div class="login-item-content cannelbtn">
 					<button class="btn" @click="loginsub">取消</button>
@@ -33,7 +35,7 @@
 			<div class="login-item long-lable">
 				<div class="login-item-lable">PlayStation&copy;Network玩家</div>
 				<div class="login-item-content">
-					<button class="btn" @click="loginsub">PS3首次登录？</button>
+					<button class="btn" @click="loginsub">PS3™首次登录？</button>
 				</div>
 			</div>
 			<div class="login-item long-lable">
@@ -48,10 +50,40 @@
 
 <script>
 export default {
+	data() {
+		return {
+			username: 'Guest',
+			password: '123456',
+			subStatus: false
+		};
+	},
+	watch: {
+		username(e) {
+			let _this = this;
+			_this.subStatus = e === '' || _this.password === '';
+		},
+		password(e) {
+			let _this = this;
+			_this.subStatus = e === '' || _this.password === '';
+		}
+	},
 	methods: {
 		// 登录
 		loginsub() {
-			this.$toast('我是弹出消息');
+			let _this = this;
+			_this.$ajax
+				.get('/api/login')
+				.then(res => {
+					let _res = res.data.data;
+					this.$toast(_res.msg, 1500);
+					window.localStorage.setItem('token',_res.token);
+					setTimeout(() => {
+						_this.$router.push('home')
+					}, 1500);
+				})
+				.catch(response => {
+					this.$toast('出错了');
+				});
 		}
 	},
 	mounted() {}
@@ -111,6 +143,9 @@ export default {
 					border-radius: 3px;
 					text-align: left;
 					background: linear-gradient(#555, #333);
+					&:disabled {
+						background: #2a2a2a;
+					}
 				}
 				&.cannelbtn {
 					margin-left: 10px;
@@ -118,7 +153,7 @@ export default {
 			}
 			.logo {
 				width: 100px;
-				margin-left: 70px;
+				margin-left: 72px;
 				.img {
 					display: block;
 					width: 100%;
